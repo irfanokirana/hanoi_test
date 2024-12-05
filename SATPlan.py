@@ -17,37 +17,40 @@ time_points = [0, 1, 2, 3, 4, 5, 6]
 #                               (not put-down_d2_p3_0)
 # ))
 
-def generate_comments(disks, pegs, time_points):
-    for disk in disks:
-        for peg in pegs:
-            for t in time_points:
-                action = f"pick-up_{disk}_{peg}_{t}"
-                conditions = []
 
-                for d in disks:
-                     for p in pegs:
-                        # Exclude the specific action currently being processed
-                        if not (d == disk and p == peg):
-                            conditions.append(f"(not pick-up_{d}_{p}_{t})")
-                        conditions.append(f"(not put-down_{d}_{p}_{t})")
-               
-                     if d == 'd1':
-                        conditions.append(f"(not pick-up_d1_d2_{t})")
-                        conditions.append(f"(not put-down_d1_d2_{t})")
 
-                     if d == 'd2':
-                        conditions.append(f"(not pick-up_d1_{d}_{t})")
-                        conditions.append(f"(not put-down_d1_{d}_{t})")
-                         
-                # Combine all conditions into a single string with indentation
-                condition_str = " ".join(conditions)
-                print(f"(:implies {action} (and {condition_str}))\n")
-                
-disks = ['d1', 'd2']
-pegs = ['p1', 'p2', 'p3']
-time_points = [0, 1, 2, 3, 4, 5, 6]
+#DEFINE PICKUP RULES
+pickup_rules = []
 
-generate_comments(disks, pegs, time_points)
+for disk in disks:
+   for peg in pegs:
+      for t in time_points:
+            action = f"pick-up_{disk}_{peg}_{t}"
+            conditions = []
+
+            for d in disks:
+               for p in pegs:
+                  #exclude current action
+                  if not (d == disk and p == peg):
+                        conditions.append(f"(not pick-up_{d}_{p}_{t})")
+
+                  conditions.append(f"(not put-down_{d}_{p}_{t})")
+         
+               if d == 'd1':
+                  conditions.append(f"(not pick-up_d1_d2_{t})")
+                  conditions.append(f"(not put-down_d1_d2_{t})")
+
+               if d == 'd2':
+                  conditions.append(f"(not pick-up_d1_{d}_{t})")
+                  conditions.append(f"(not put-down_d1_{d}_{t})")
+                     
+            # Combine all conditions into a single string with indentation
+            rule = f"(:implies {action} (and {' '.join(conditions)}))"
+            pickup_rules.append('\n' + rule)
+
+for rule in pickup_rules:
+    print(rule)
+print(len(pickup_rules))
 
 
 
